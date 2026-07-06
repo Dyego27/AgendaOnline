@@ -1,0 +1,39 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Appointment {
+  id            String   @id @default(uuid())
+  client        String
+  date          String
+  time          String
+  barber        String
+  value         Float
+  status        String   @default("Pendente") 
+  service       String
+  paymentMethod String?  
+  createdAt     DateTime @default(now())
+}
+
+model Expense {
+  id          String   @id @default(uuid())
+  barber      String
+  description String
+  category    String
+  value       Float
+  date        String
+  createdAt   DateTime @default(now())
+}
+
+model ManualCut {
+  id          String   @id @default(uuid())
+  description String
+  value       Float
+  date        String
+  createdAt   DateTime @default(now())
+}
