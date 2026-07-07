@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TrendingUp, TrendingDown, DollarSign, Plus, Minus, Download, Info } from "lucide-react";
+import { TrendingUp, TrendingDown, DollarSign, Plus, Minus, Download, Info, Trash2 } from "lucide-react";
 import { Appointment, Expense, ManualCut, TimePeriod } from "../types";
 
 interface Props {
@@ -10,16 +10,16 @@ interface Props {
   manualCuts: ManualCut[];
   onAddExpense: (e: Omit<Expense, "id" | "date">) => void;
   onAddManualCut: (c: Omit<ManualCut, "id" | "date">) => void;
+  onClearAll: () => void; 
 }
 
 type FormMode = null | "corte" | "despesa";
 
-export default function FinancasView({ appointments, expenses, manualCuts, onAddExpense, onAddManualCut }: Props) {
+export default function FinancasView({ appointments, expenses, manualCuts, onAddExpense, onAddManualCut, onClearAll }: Props) {
   const [period, setPeriod] = useState<TimePeriod>("Quinzena");
   const [formMode, setFormMode] = useState<FormMode>(null);
   const [expenseFilter, setExpenseFilter] = useState<"Dia" | "Quinzena" | "Mês">("Dia");
 
- 
   const [corteDesc, setCorteDesc] = useState("");
   const [corteVal, setCorteVal] = useState("");
   const [despBarber, setDespBarber] = useState("Carlos");
@@ -34,7 +34,6 @@ export default function FinancasView({ appointments, expenses, manualCuts, onAdd
 
   const fmt = (v: number) => `R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`;
 
- 
   const chartPoints = Array.from({ length: 15 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (14 - i));
@@ -66,6 +65,12 @@ export default function FinancasView({ appointments, expenses, manualCuts, onAdd
     a.href = url; a.download = "financas.csv"; a.click();
   };
 
+  const handleClearClick = () => {
+    if (confirm("Tem certeza que deseja ZERAR todos os dados financeiros e de cortes desta quinzena? Esta ação não pode ser desfeita.")) {
+      onClearAll();
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -79,7 +84,6 @@ export default function FinancasView({ appointments, expenses, manualCuts, onAdd
         </div>
       </div>
 
-    
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-[#1a1a1a] rounded-xl p-5 border border-[#2a2a2a]">
           <div className="flex items-center justify-between mb-2">
@@ -110,7 +114,6 @@ export default function FinancasView({ appointments, expenses, manualCuts, onAdd
         </div>
       </div>
 
-    
       <div className="bg-[#1a1a1a] rounded-xl p-5 border border-[#2a2a2a]">
         <h2 className="text-white font-semibold mb-4">Receita vs Despesas</h2>
         <div className="relative h-40 flex items-end gap-0.5 overflow-x-auto">
@@ -134,29 +137,36 @@ export default function FinancasView({ appointments, expenses, manualCuts, onAdd
         </div>
       </div>
 
-    
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap justify-between items-center gap-3">
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={() => setFormMode(formMode === "corte" ? null : "corte")}
+            className="flex items-center gap-2 px-4 py-2.5 bg-purple-700/30 border border-purple-600 text-purple-300 rounded-xl text-sm font-medium hover:bg-purple-700/50 transition-colors"
+          >
+            <Plus size={16} /> Registrar Corte Físico (Manual)
+          </button>
+          <button
+            onClick={() => setFormMode(formMode === "despesa" ? null : "despesa")}
+            className="flex items-center gap-2 px-4 py-2.5 bg-red-900/30 border border-red-700 text-red-400 rounded-xl text-sm font-medium hover:bg-red-900/50 transition-colors"
+          >
+            <Minus size={16} /> Registrar Despesa / Decremento
+          </button>
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-2 px-4 py-2.5 bg-green-900/30 border border-green-700 text-green-400 rounded-xl text-sm font-medium hover:bg-green-900/50 transition-colors"
+          >
+            <Download size={16} /> Exportar Relatório
+          </button>
+        </div>
+
         <button
-          onClick={() => setFormMode(formMode === "corte" ? null : "corte")}
-          className="flex items-center gap-2 px-4 py-2.5 bg-purple-700/30 border border-purple-600 text-purple-300 rounded-xl text-sm font-medium hover:bg-purple-700/50 transition-colors"
+          onClick={handleClearClick}
+          className="flex items-center gap-2 px-4 py-2.5 bg-red-600/10 border border-red-600/30 text-red-500 rounded-xl text-sm font-medium hover:bg-red-600 hover:text-white transition-all ml-auto"
         >
-          <Plus size={16} /> Registrar Corte Físico (Manual)
-        </button>
-        <button
-          onClick={() => setFormMode(formMode === "despesa" ? null : "despesa")}
-          className="flex items-center gap-2 px-4 py-2.5 bg-red-900/30 border border-red-700 text-red-400 rounded-xl text-sm font-medium hover:bg-red-900/50 transition-colors"
-        >
-          <Minus size={16} /> Registrar Despesa / Decremento
-        </button>
-        <button
-          onClick={handleExport}
-          className="flex items-center gap-2 px-4 py-2.5 bg-green-900/30 border border-green-700 text-green-400 rounded-xl text-sm font-medium hover:bg-green-900/50 transition-colors"
-        >
-          <Download size={16} /> Exportar Relatório
+          <Trash2 size={16} /> ZERAR TUDO
         </button>
       </div>
 
-    
       {formMode === "corte" && (
         <div className="bg-[#1a1a1a] rounded-xl p-5 border border-[#2a2a2a]">
           <h3 className="text-white font-semibold mb-4">Registrar Corte Físico</h3>
@@ -212,7 +222,6 @@ export default function FinancasView({ appointments, expenses, manualCuts, onAdd
         </div>
       )}
 
-     
       <div className="bg-[#1a1a1a] rounded-xl p-5 border border-[#2a2a2a]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <h2 className="text-white font-semibold">Histórico de Despesas</h2>
