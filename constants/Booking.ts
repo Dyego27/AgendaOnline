@@ -93,6 +93,24 @@ export const SERVICES: Service[] = [
     name: "Nevou", 
     price: 75, 
     image: "/images/Nevou.jpg" 
+  },
+  {
+    id: "BarbaItaliana",
+    name: "Barba Italiana",
+    price: 15,
+    image: "/images/BarbaItaliana.jpeg",
+  },
+   {
+    id: "BarbaDesenhada",
+    name: "Barba Desenhada",
+    price: 15,
+    image: "/images/BarbaDesenhada.jpeg",
+  },
+   {
+    id: "BarbaDegrade",
+    name: "Barba com Degrade",
+    price: 15,
+    image: "/images/BarbaItaliana.jpeg",
   }
 ];
 
