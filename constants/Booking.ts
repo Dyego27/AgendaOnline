@@ -111,7 +111,14 @@ export const SERVICES: Service[] = [
     name: "Barba com Degrade",
     price: 15,
     image: "/images/BarbaItaliana.jpeg",
+  },
+  {
+    id: "Sobrancelha",
+    name: "Sobrancelha",
+    price: 5,
+    image: "/images/Sobrancelha.webp",
   }
+  
 ];
 
 export const BARBERS: Barber[] = [
