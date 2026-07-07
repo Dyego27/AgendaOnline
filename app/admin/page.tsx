@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // IMPORTAÇÃO DO ROUTER
+import { useRouter } from "next/navigation"; 
 import {
   LayoutDashboard, History, Wallet, BarChart2, LogOut, X, Menu, Scissors
 } from "lucide-react";
@@ -84,12 +84,19 @@ export default function AdminDashboard() {
     setManualCuts((prev) => [...prev, newCut]);
   };
 
+  // Nova função para zerar os dados locais das finanças e cortes manuais
+  const handleClearAll = () => {
+    setExpenses([]);
+    setManualCuts([]);
+    // Se no futuro precisar limpar agendamentos concluídos também, basta descomentar a linha abaixo:
+    // setAppointments((prev) => prev.filter((a) => a.status !== "Concluído"));
+  };
+
   const navigate = (tab: Tab) => {
     setActiveTab(tab);
     setSidebarOpen(false);
   };
 
- 
   const handleLogout = () => {
     router.push("/"); 
   };
@@ -121,7 +128,6 @@ export default function AdminDashboard() {
       </nav>
 
       <div className="p-3 border-t border-[#2a2a2a]">
-       
         <button 
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-900/20 transition-colors"
@@ -182,6 +188,7 @@ export default function AdminDashboard() {
               manualCuts={manualCuts}
               onAddExpense={handleAddExpense}
               onAddManualCut={handleAddManualCut}
+              onClearAll={handleClearAll} 
             />
           )}
           {activeTab === "desempenho" && (
